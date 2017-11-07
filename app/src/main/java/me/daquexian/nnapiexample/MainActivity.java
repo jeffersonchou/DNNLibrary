@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -28,14 +29,15 @@ import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
-    implements EasyPermissions.PermissionCallbacks {
+        implements CameraBridgeViewBase.CvCameraViewListener2,
+        EasyPermissions.PermissionCallbacks {
 
     @SuppressWarnings("unused")
     private static final String TAG = "NNAPI Example";
     private static final int PICK_IMAGE = 123;
     private static final int INPUT_LENGTH = 28;
 
-    String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE};
+    String[] params = {Manifest.permission.CAMERA};
 
     private TextView textView;
     private Button button;
@@ -60,14 +62,13 @@ public class MainActivity extends AppCompatActivity
         button.setText(R.string.button_text);
         imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
-        if (EasyPermissions.hasPermissions(this, perms)) {
+        if (EasyPermissions.hasPermissions(this, params)) {
             initListener();
 
             initModel(getAssets());
         } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "Please grant",
-                    321, perms);
+            EasyPermissions.requestPermissions(this, "Please grant or the app can't init",
+                    321, params);
         }
     }
 
@@ -148,11 +149,27 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onCameraViewStarted(int width, int height) {
+
+    }
+
+    @Override
+    public void onCameraViewStopped() {
+
+    }
+
+    @Override
+    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+        return null;
     }
 
     @Override
