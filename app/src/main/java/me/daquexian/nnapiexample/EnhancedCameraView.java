@@ -23,7 +23,10 @@ import java.util.List;
 import static android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK;
 import static android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
 
-public class PortraitCameraView extends CameraBridgeViewBase implements Camera.PreviewCallback {
+/**
+ * Copied from other project. It's just a CameraView, don't care about it.
+ */
+public class EnhancedCameraView extends CameraBridgeViewBase implements Camera.PreviewCallback {
 
     private static final int MAGIC_TEXTURE_ID = 10;
     private static final String TAG = "JavaCameraView";
@@ -64,11 +67,11 @@ public class PortraitCameraView extends CameraBridgeViewBase implements Camera.P
         }
     }
 
-    public PortraitCameraView(Context context, int cameraId) {
+    public EnhancedCameraView(Context context, int cameraId) {
         super(context, cameraId);
     }
 
-    public PortraitCameraView(Context context, AttributeSet attrs) {
+    public EnhancedCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -338,9 +341,9 @@ public class PortraitCameraView extends CameraBridgeViewBase implements Camera.P
 
         public void run() {
             do {
-                synchronized (PortraitCameraView.this) {
+                synchronized (EnhancedCameraView.this) {
                     try {
-                        PortraitCameraView.this.wait();
+                        EnhancedCameraView.this.wait();
                     } catch (InterruptedException e) {
                         Log.e(TAG, "CameraWorker interrupted", e);
                     }

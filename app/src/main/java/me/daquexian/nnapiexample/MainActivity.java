@@ -1,21 +1,14 @@
 package me.daquexian.nnapiexample;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -23,7 +16,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import java.io.InputStream;
 import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
@@ -34,15 +26,12 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("unused")
     private static final String TAG = "NNAPI Example";
-    private static final int PICK_IMAGE = 123;
     private static final int INPUT_LENGTH = 28;
 
     String[] params = {Manifest.permission.CAMERA};
 
     private TextView textView;
-    private Button button;
-    private ImageView imageView;
-    private Bitmap selectedImage;
+    private EnhancedCameraView cameraView;
 
     static {
         OpenCVLoader.initDebug();
@@ -55,76 +44,52 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         textView = findViewById(R.id.text);
-        button = findViewById(R.id.button);
-        imageView = findViewById(R.id.imageView);
+        cameraView = findViewById(R.id.camera_view);
 
+        textView.setTextSize(20);
         textView.setText(R.string.welcome_message);
-        button.setText(R.string.button_text);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
         if (EasyPermissions.hasPermissions(this, params)) {
-            initListener();
-
             initModel(getAssets());
+
+            initCamera();
         } else {
             EasyPermissions.requestPermissions(this, "Please grant or the app can't init",
                     321, params);
         }
     }
 
-    private void initListener() {
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                startActivityForResult(intent, PICK_IMAGE);
-            }
-        });
+    private void initCamera() {
+        cameraView.setCvCameraViewListener(this);
+        cameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_BACK);
+        cameraView.enableView();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data.getData() != null) {
-            if (selectedImage != null && !selectedImage.isRecycled()) {
-                selectedImage.recycle();
-            }
-
-            final InputStream imageStream;
-            try {
-                imageStream = getContentResolver().openInputStream(data.getData());
-                selectedImage = BitmapFactory.decodeStream(imageStream);
-
-                imageView.setImageBitmap(selectedImage);
-
-                float[] inputData = getInputData(selectedImage);
-
-                int predictNumber = predict(inputData);
+    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+        Mat grayscale = inputFrame.gray();
+        float[] inputData = getInputDataFromGrayscaleImageMat(grayscale);
+        final int predictNumber = predict(inputData);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
                 textView.setText(getResources().getString(R.string.predict_text, predictNumber));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                textView.setText(e.getMessage());
             }
-        }
+        });
+        return grayscale;
     }
 
-    private float[] getInputData(Bitmap bitmap) {
-        Mat imageMat = new Mat();
-        Mat inputMat = new Mat();
-
-        Utils.bitmapToMat(bitmap, imageMat);
+    private float[] getInputDataFromGrayscaleImageMat(Mat imageMat) {
+        Mat inputDataMat = new Mat();
 
         // convert the image to 28 * 28, grayscale, 0~1, and smaller means whiter
-        Imgproc.cvtColor(imageMat, imageMat, Imgproc.COLOR_RGBA2GRAY);
         imageMat = centerCropAndScale(imageMat, INPUT_LENGTH);
         imageMat.convertTo(imageMat, CvType.CV_32F, 1. / 255);
-        Core.subtract(Mat.ones(imageMat.size(), CvType.CV_32F), imageMat, inputMat);
+        Core.subtract(Mat.ones(imageMat.size(), CvType.CV_32F), imageMat, inputDataMat);
 
-        float[] inputData = new float[inputMat.width() * inputMat.height()];
+        float[] inputData = new float[inputDataMat.width() * inputDataMat.height()];
 
-        inputMat.get(0, 0, inputData);
+        inputDataMat.get(0, 0, inputData);
 
         return inputData;
     }
@@ -165,11 +130,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onCameraViewStopped() {
 
-    }
-
-    @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        return null;
     }
 
     @Override
