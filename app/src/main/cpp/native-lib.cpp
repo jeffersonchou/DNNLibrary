@@ -115,59 +115,6 @@ Java_me_daquexian_nnapiexample_MainActivity_clearModel(
     builder.clear();
 }
 
-/**
- * set operand value from file in assets
- * @param model
- * @param mgr A pointer to AAssetManager got from Java's AssetManager
- * @param index The index of operand
- * @param filename The filename of weight or bias
- * @return a pointer to the buffer of weights or bias, according to the doc, the buffer should not
- * be modified until all executions complete, so please delete the buffer after the executions
- * complete.
- */
-char* setOperandValueFromAssets(ANeuralNetworksModel *model, AAssetManager *mgr, int32_t index,
-                                const char* filename) {
-    AAsset* asset = AAssetManager_open(mgr, filename, AASSET_MODE_UNKNOWN);
-    size_t size = static_cast<size_t>(AAsset_getLength(asset));
-    char* buffer = new char[size];
-    AAsset_read(asset, buffer, static_cast<size_t>(size));
-    ANeuralNetworksModel_setOperandValue(model, index, buffer, size);
-    return buffer;
-}
-
-ANeuralNetworksOperandType getFloat32OperandTypeWithDims(std::vector<uint32_t> &dims) {
-    ANeuralNetworksOperandType type;
-    type.type = ANEURALNETWORKS_TENSOR_FLOAT32;
-    type.scale = 0.f;
-    type.zeroPoint = 0;
-    type.dimensionCount = static_cast<uint32_t>(dims.size());
-    type.dimensions = &dims[0];
-
-    return type;
-}
-
-ANeuralNetworksOperandType getInt32OperandType() {
-    ANeuralNetworksOperandType type;
-    type.type = ANEURALNETWORKS_TENSOR_INT32;
-    type.scale = 0.f;
-    type.zeroPoint = 0;
-    type.dimensionCount = 0;
-    type.dimensions = nullptr;
-
-    return type;
-}
-
-ANeuralNetworksOperandType getFloat32OperandType() {
-    ANeuralNetworksOperandType type;
-    type.type = ANEURALNETWORKS_TENSOR_FLOAT32;
-    type.scale = 0.f;
-    type.zeroPoint = 0;
-    type.dimensionCount = 0;
-    type.dimensions = nullptr;
-
-    return type;
-}
-
 int getMaxIndex(float arr[], int length) {
     int maxIndex = 0;
     auto max = arr[0];
