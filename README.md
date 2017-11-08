@@ -19,30 +19,3 @@ This screenshot is from `master` branch, which uses camera.
 ## Preparation
 
 Please make sure the Android System on your phone is 8.1+, or you may want to use API 27 emulator.
-
-### Workaround for UnsatisfiedLinkError
-
-You will get a `UnsatisfiedLinkError` about `ANeuralNetworksModel_identifyInputsAndOutputs` when you compile the project. It is a known bug. Please use the following workaround from [this](https://stackoverflow.com/questions/46987602/unsatisfiedlinkerror-on-aneuralnetworksmodel-identifyinputsandoutputs-in-nnapi-o):
-
-In your NDK's android/NeuralNetworks.h, replace the declaration of `ANeuralNetworksModel_identifyInputsAndOutputs` by
-
-```
-__attribute__((weak))
-extern "C" int ANeuralNetworksModel_setInputsAndOutputs(
-        ANeuralNetworksModel* model,
-        uint32_t inputCount, const uint32_t* inputs, uint32_t outputCount,
-        const uint32_t* outputs);
-
-extern "C" int ANeuralNetworksModel_identifyInputsAndOutputs(
-        ANeuralNetworksModel* model,
-        uint32_t inputCount, const uint32_t* inputs, uint32_t outputCount,
-        const uint32_t* outputs) {
-
-    return ANeuralNetworksModel_setInputsAndOutputs(
-            model, inputCount, inputs, outputCount, outputs);
-}
-```
-
-Please check out the stackoverflow post above for more details.
-
-
