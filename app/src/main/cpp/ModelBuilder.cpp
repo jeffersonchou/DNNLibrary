@@ -200,13 +200,12 @@ uint32_t ModelBuilder::addUInt32Operand(uint32_t value) {
 
 uint32_t ModelBuilder::addFloat32Operand(float value) {
     if (float32OperandMap.find(value) == float32OperandMap.end()) {
-        ANeuralNetworksOperandType type = getInt32OperandType();
+        ANeuralNetworksOperandType type = getFloat32OperandType();
         uint32_t index = addOperand(&type);
         ANeuralNetworksModel_setOperandValue(model, index, &value, sizeof(value));
         float32OperandMap[value] = index;
     }
-    return uint32OperandMap[value];
-
+    return float32OperandMap[value];
 }
 
 uint32_t ModelBuilder::addOperand(ANeuralNetworksOperandType *type) {
