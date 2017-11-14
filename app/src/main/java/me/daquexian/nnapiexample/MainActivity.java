@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
         if (EasyPermissions.hasPermissions(this, perms)) {
             initListener();
 
-            ModelWrapper.readFile(getAssets(), "resnet18");
+            ModelWrapper.readFile(getAssets(), "squeezenet.daq");
             ModelWrapper.setOutput("prob");
             ModelWrapper.compile(ModelWrapper.PREFERENCE_FAST_SINGLE_ANSWER);
         } else {
