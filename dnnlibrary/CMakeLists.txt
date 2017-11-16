@@ -17,11 +17,7 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             src/main/cpp/JavaWrapper.cpp
-             src/main/cpp/ModelBuilder.cpp
-             src/main/cpp/ModelBuilder.h
-             src/main/cpp/Model.cpp
-             src/main/cpp/Model.h)
+             src/main/cpp/JavaWrapper.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
