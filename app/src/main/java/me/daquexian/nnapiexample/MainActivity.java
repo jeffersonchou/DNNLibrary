@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private float[] getInputDataImageNet(Bitmap bitmap) {
-        final int INPUT_LENGTH = 224;
+        final int INPUT_LENGTH = 227;
 
         Mat imageMat = new Mat();
 
