@@ -1,0 +1,10 @@
+/opt/clion/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/daquexian/repos/dnn_library_c
+CMake Error: The following variables are used in this project, but they are set to NOTFOUND.
+Please set them or make sure they are set and tested correctly in the CMake files:
+log-lib
+    linked by target "dnnlibrary" in directory /home/daquexian/repos/dnn_library_c
+neural-networks-lib
+    linked by target "dnnlibrary" in directory /home/daquexian/repos/dnn_library_c
+
+-- Configuring incomplete, errors occurred!
+See also "/home/daquexian/repos/dnn_library_c/cmake-build-debug/CMakeFiles/CMakeOutput.log".

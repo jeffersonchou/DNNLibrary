@@ -1,0 +1,4 @@
+/home/daquexian/repos/dnn_library_c/cmake-build-android/CMakeFiles/rebuild_cache.dir
+/home/daquexian/repos/dnn_library_c/cmake-build-android/CMakeFiles/edit_cache.dir
+/home/daquexian/repos/dnn_library_c/cmake-build-android/CMakeFiles/dnn_test.dir
+/home/daquexian/repos/dnn_library_c/cmake-build-android/CMakeFiles/dnnlibrary.dir

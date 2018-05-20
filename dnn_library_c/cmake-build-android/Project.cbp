@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Project"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\android-ndk-r16b\;CMake Files\..\..\android-ndk-r16b\build\;CMake Files\..\..\android-ndk-r16b\build\cmake\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/daquexian/repos/dnn_library_c/cmake-build-android"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/daquexian/repos/dnn_library_c/cmake-build-android"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/daquexian/repos/dnn_library_c/cmake-build-android"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="dnn_test">
+				<Option output="/home/daquexian/repos/dnn_library_c/cmake-build-android/dnn_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/daquexian/repos/dnn_library_c/cmake-build-android"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/daquexian/android-ndk-r16b/sysroot/usr/include/android"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/home/daquexian/android-ndk-r16b/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/5.0.300080/include"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 dnn_test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="dnn_test/fast">
+				<Option output="/home/daquexian/repos/dnn_library_c/cmake-build-android/dnn_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/daquexian/repos/dnn_library_c/cmake-build-android"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/daquexian/android-ndk-r16b/sysroot/usr/include/android"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/home/daquexian/android-ndk-r16b/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/5.0.300080/include"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 dnn_test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="dnnlibrary">
+				<Option output="/home/daquexian/repos/dnn_library_c/cmake-build-android/libdnnlibrary.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/daquexian/repos/dnn_library_c/cmake-build-android"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/daquexian/android-ndk-r16b/sysroot/usr/include/android"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/home/daquexian/android-ndk-r16b/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/5.0.300080/include"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 dnnlibrary"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="dnnlibrary/fast">
+				<Option output="/home/daquexian/repos/dnn_library_c/cmake-build-android/libdnnlibrary.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/daquexian/repos/dnn_library_c/cmake-build-android"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/daquexian/android-ndk-r16b/sysroot/usr/include/android"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib64/gcc/x86_64-pc-linux-gnu/7.3.1/../../../../include/c++/7.3.1/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/home/daquexian/android-ndk-r16b/toolchains/llvm/prebuilt/linux-x86_64/lib64/clang/5.0.300080/include"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 dnnlibrary/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/daquexian/repos/dnn_library_c/cmake-build-android/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/daquexian/repos/dnn_library_c/Model.cpp">
+			<Option target="dnnlibrary"/>
+		</Unit>
+		<Unit filename="/home/daquexian/repos/dnn_library_c/Model.h">
+			<Option target="dnnlibrary"/>
+		</Unit>
+		<Unit filename="/home/daquexian/repos/dnn_library_c/ModelBuilder.cpp">
+			<Option target="dnnlibrary"/>
+		</Unit>
+		<Unit filename="/home/daquexian/repos/dnn_library_c/ModelBuilder.h">
+			<Option target="dnnlibrary"/>
+		</Unit>
+		<Unit filename="/home/daquexian/repos/dnn_library_c/main.cpp">
+			<Option target="dnn_test"/>
+			<Option target="dnnlibrary"/>
+		</Unit>
+		<Unit filename="/home/daquexian/repos/dnn_library_c/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/daquexian/repos/dnn_library_c/../../android-ndk-r16b/build/cmake/android.toolchain.cmake">
+			<Option virtualFolder="CMake Files\..\..\android-ndk-r16b\build\cmake\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

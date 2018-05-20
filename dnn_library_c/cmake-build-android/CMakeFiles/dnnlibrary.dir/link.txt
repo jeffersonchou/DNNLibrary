@@ -1,0 +1,2 @@
+/home/daquexian/android-ndk-r16b/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-ar qc libdnnlibrary.a  CMakeFiles/dnnlibrary.dir/ModelBuilder.cpp.o CMakeFiles/dnnlibrary.dir/Model.cpp.o CMakeFiles/dnnlibrary.dir/main.cpp.o
+/home/daquexian/android-ndk-r16b/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-ranlib libdnnlibrary.a
