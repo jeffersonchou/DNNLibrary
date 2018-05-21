@@ -24,7 +24,7 @@ add_library( # Sets the name of the library.
              ModelBuilder.cpp
              ModelBuilder.h
              Model.cpp
-             Model.h main.cpp)
+             Model.h nnapi_benchmark.cpp android_log_helper.h)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -54,8 +54,21 @@ target_link_libraries( # Specifies the target library.
                        ${log-lib}
                        ${neural-networks-lib})
 
-add_executable(dnn_test
-        main.cpp)
+add_executable(nnapi_benchmark
+        nnapi_benchmark.cpp)
 
-target_link_libraries(dnn_test
+target_link_libraries(nnapi_benchmark
+        dnnlibrary)
+
+add_executable(dnn_save_result
+        stb_image.h
+        dnn_save_result.cpp)
+
+target_link_libraries(dnn_save_result
+        dnnlibrary)
+
+add_executable(dnn_simplest
+        dnn_simplest.cpp)
+
+target_link_libraries(dnn_simplest
         dnnlibrary)

@@ -4,7 +4,31 @@
 
 #include "ModelBuilder.h"
 
+#include <array>
+#include <cmath>
+#include <ctime>
+#include <numeric>
+#include <sstream>
+#include <fstream>
+#include <iostream>
+
+#include "android_log_helper.h"
+
 using namespace std;
+
+
+ModelBuilder &ModelBuilder::simplestModel() {
+    uint32_t input = addInput(1, 1, 1);
+    cout << addAddScalar(input, 1.5) << endl;
+    return *this;
+}
+
+ModelBuilder &ModelBuilder::readFromFile(std::string filename) {
+    std::ifstream ifs(filename);
+    // read whole content of a file into a string
+    string modelStr(static_cast<std::stringstream const&>(std::stringstream() << ifs.rdbuf()).str());
+    return readFromBuffer(modelStr.c_str());
+}
 
 
 ModelBuilder &ModelBuilder::readFromBuffer(const char* buffer) {
@@ -314,6 +338,8 @@ ModelBuilder &ModelBuilder::readFromBuffer(const char* buffer) {
         while (*intPt++ != MF_PARAM_END) ;
     }
 
+    blobNameToIndex["data_bak"] = addAddScalar(0, 0.0f);
+
     return *this;
 }
 
@@ -332,6 +358,7 @@ uint32_t ModelBuilder::addInput(uint32_t height, uint32_t width, uint32_t depth)
     vector<uint32_t> dimen{1, width, height, depth};
     ANeuralNetworksOperandType type = getFloat32OperandTypeWithDims(dimen);
     uint32_t index = addNewOperand(&type);
+    cout << "index: " << index << endl;
 
     dimensMap[index] = dimen;
     inputIndexVector.push_back(index);
@@ -693,32 +720,37 @@ void ModelBuilder::addIndexIntoOutput(uint32_t index) {
 
 int ModelBuilder::compile(uint32_t preference) {
     int ret;
+    cout << inputIndexVector.size() << endl;
+    cout << outputIndexVector.size() << endl;
+    cout << "---" << endl;
+    cout << inputIndexVector[0] << endl;
+    cout << outputIndexVector[0] << endl;
     if ((ret = ANeuralNetworksModel_identifyInputsAndOutputs(
             model,
             static_cast<uint32_t>(inputIndexVector.size()), &inputIndexVector[0],
             static_cast<uint32_t>(outputIndexVector.size()), &outputIndexVector[0] )) != ANEURALNETWORKS_NO_ERROR) {
 
-        return ret;
+        return NN_IDENTIFY_IO | ret;
     }
 
     ret = ANeuralNetworksModel_finish(model);
     if (ret != ANEURALNETWORKS_NO_ERROR) {
-        return ret;
+        return NN_MODEL_FINISH | ret;
     }
 
     ret = ANeuralNetworksCompilation_create(model, &compilation);
     if (ret != ANEURALNETWORKS_NO_ERROR) {
-        return ret;
+        return NN_CREATE | ret;
     }
 
     ret = ANeuralNetworksCompilation_setPreference(compilation, preference);
     if (ret != ANEURALNETWORKS_NO_ERROR) {
-        return ret;
+        return NN_PREFERENCE | ret;
     }
 
     ret = ANeuralNetworksCompilation_finish(compilation);
     if (ret != ANEURALNETWORKS_NO_ERROR) {
-        return ret;
+        return NN_COMP_FINISH | ret;
     }
 
     return 0;
@@ -813,7 +845,7 @@ uint32_t ModelBuilder::addAddScalar(uint32_t input, float scalar) {
     uint32_t outputOperandIndex = addNewOperand(&outputBlobType);
     dimensMap[outputOperandIndex] = dimensMap[input];
 
-    ANeuralNetworksModel_addOperation(model, ANEURALNETWORKS_ADD, 3, &inputOperands[0], 1, &outputOperandIndex);
+    cout << "add add operation " << ANeuralNetworksModel_addOperation(model, ANEURALNETWORKS_ADD, 3, &inputOperands[0], 1, &outputOperandIndex) << endl;
     return outputOperandIndex;
 }
 
@@ -879,6 +911,33 @@ std::vector<uint32_t> ModelBuilder::getBlobDim(uint32_t index) {
 int ModelBuilder::init() {
     return ANeuralNetworksModel_create(&model);
 }
+
+string ModelBuilder::getErrorProcedure(int errorCode) {
+    errorCode &= NN_PROCEDURE_MASK;
+    switch (errorCode) {
+        case NN_COMP_FINISH:
+            return "compilation finish";
+        case NN_PREFERENCE:
+            return "set preference";
+        case NN_CREATE:
+            return "compilation create";
+        case NN_MODEL_FINISH:
+            return "model finish";
+        case NN_IDENTIFY_IO:
+            return "identify input and output";
+        default:
+            return "Unknown error code";
+    }
+}
+
+ResultCode ModelBuilder::getErrorCause(int errorCode) {
+    errorCode &= NN_CAUSE_MASK;
+
+    return static_cast<ResultCode>(errorCode);
+}
+
+
+
 
 uint32_t product(const vector<uint32_t> &v) {
     return static_cast<uint32_t> (accumulate(v.begin(), v.end(), 1, multiplies<uint32_t>()));
