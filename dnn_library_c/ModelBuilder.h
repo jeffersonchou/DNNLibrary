@@ -149,6 +149,7 @@ public:
     std::vector<uint32_t> getOutputIndexes();
     int setInputBuffer(const Model& model, int32_t index, void *buffer, size_t length);
     int setOutputBuffer(const Model& model, int32_t index, void *buffer, size_t length);
+    void registerBufferPointer(void *pointer);
     void clear();
 
     ModelBuilder();

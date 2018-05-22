@@ -26,6 +26,13 @@ ModelBuilder &ModelBuilder::simplestModel() {
 }
 
 
+/**
+ * It is designed to read a regular file. For reading file in assets folder of Android app,
+ * read the content into a char array and call readFromBuffer
+ *
+ * @param filename , like "/data/local/tmp/squeezenet.daq"
+ * @return ModelBuilder itself
+ */
 ModelBuilder &ModelBuilder::readFromFile(std::string filename) {
     std::ifstream ifs(filename, ios::binary | ios::ate);
     streamsize len = ifs.tellg();
@@ -753,7 +760,9 @@ int ModelBuilder::compile(uint32_t preference) {
     return 0;
 }
 
-
+void ModelBuilder::registerBufferPointer(void *pointer) {
+    bufferPointers.push_back(pointer);
+}
 
 void ModelBuilder::clear() {
     ANeuralNetworksCompilation_free(compilation);
