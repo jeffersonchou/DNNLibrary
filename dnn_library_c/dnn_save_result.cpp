@@ -9,6 +9,7 @@
 #include <iostream>
 #include <chrono>
 
+#include "android_log_helper.h"
 #include "ModelBuilder.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -26,10 +27,12 @@ int main(int argc, char **argv) {
 
     ModelBuilder builder;
     builder.init();
-    builder.readFromFile(daqName);
-    cout << builder.getBlobIndex("data_bak") << endl;
-    // builder.addIndexIntoOutput(builder.getBlobIndex("data_bak"));
-    builder.addIndexIntoOutput(builder.getBlobIndex("conv1"));
+    try {
+        builder.readFromFile(daqName);
+    } catch (string& str) {
+        LOGE("Exception: %s", str.c_str());
+    }
+    builder.addIndexIntoOutput(builder.getBlobIndex("prob"));
     int ret = builder.compile(ANEURALNETWORKS_PREFER_FAST_SINGLE_ANSWER);
     cout << ModelBuilder::getErrorProcedure(ret) << endl;
 
@@ -45,7 +48,7 @@ int main(int argc, char **argv) {
         }
     } else {
         for (int i = 0; i < inputLen; i++) {
-            data[i] = 1;
+            data[i] = i;
         }
     }
     uint32_t outputLen = product(builder.getBlobDim(builder.getOutputIndexes()[0]));
@@ -60,7 +63,13 @@ int main(int argc, char **argv) {
     cout << builder.setOutputBuffer(model, builder.getOutputIndexes()[0], output, sizeof(output)) << endl;
     cout << model.predict() << endl;
     cout << "----" << endl;
-    for (int i = 0; i < 10; i++) {
-        cout << output[outputLen - 10 + i] << endl;
+    float max = output[0];
+    for (int i = 0; i < outputLen; i++) {
+        if (output[i] > max) {
+            max = output[i];
+        }
     }
+    cout << max << endl;
+
+    builder.clear();
 }

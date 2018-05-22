@@ -33,6 +33,13 @@ add_library( # Sets the name of the library.
 # completing its build.
 
 find_library( # Sets the name of the path variable.
+        android-lib
+
+        # Specifies the name of the NDK library that
+        # you want CMake to locate.
+        android )
+
+find_library( # Sets the name of the path variable.
               log-lib
 
               # Specifies the name of the NDK library that
@@ -51,7 +58,9 @@ target_link_libraries( # Specifies the target library.
 
                        # Links the target library to the log library
                        # included in the NDK.
+
                        ${log-lib}
+        ${android-lib}
                        ${neural-networks-lib})
 
 add_executable(nnapi_benchmark

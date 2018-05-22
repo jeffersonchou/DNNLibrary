@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import me.daquexian.dnnlibrary.ModelWrapper;
@@ -120,6 +122,8 @@ public class MainActivity extends AppCompatActivity
                 float[] inputData = getInputDataSqueezeNet(selectedImage);
 
                 float[] result = ModelWrapper.predict(inputData);
+
+                Log.d(TAG, "onActivityResult: " + Arrays.toString(result));
 
                 int predictNumber = getMaxIndex(result);
 

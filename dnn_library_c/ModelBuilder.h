@@ -110,7 +110,7 @@ public:
     static const int NN_COMP_FINISH = 1U << 20U;
 
     static std::string getErrorProcedure(int errorCode);
-    static ResultCode getErrorCause(int errorCode);
+    static std::string getErrorCause(int errorCode);
 
     ANeuralNetworksCompilation* compilation = nullptr;
 

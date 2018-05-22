@@ -5,6 +5,8 @@
 #ifndef PROJECT_ANDROID_LOG_HELPER_H
 #define PROJECT_ANDROID_LOG_HELPER_H
 
+#include <log.h>
+
 #define  LOG_TAG    "DNN Library"
 
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)

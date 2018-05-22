@@ -17,17 +17,27 @@
 using namespace std;
 
 
+// Simplest model for test
 ModelBuilder &ModelBuilder::simplestModel() {
-    uint32_t input = addInput(1, 1, 1);
-    cout << addAddScalar(input, 1.5) << endl;
+    auto input = addInput(4, 3, 2);
+    auto add = addAddScalar(input, 1.5f);
+    addIndexIntoOutput(add);
     return *this;
 }
 
+
 ModelBuilder &ModelBuilder::readFromFile(std::string filename) {
-    std::ifstream ifs(filename);
-    // read whole content of a file into a string
-    string modelStr(static_cast<std::stringstream const&>(std::stringstream() << ifs.rdbuf()).str());
-    return readFromBuffer(modelStr.c_str());
+    std::ifstream ifs(filename, ios::binary | ios::ate);
+    streamsize len = ifs.tellg();
+    ifs.seekg(0, ios::beg);
+    char *buffer = new char[len];
+    // read whole content of a file into buffer
+    if (ifs.read(buffer, len)) {
+        bufferPointers.push_back(buffer);
+        return readFromBuffer(buffer);
+    } else {
+        throw string("Read file error");
+    }
 }
 
 
@@ -325,7 +335,7 @@ ModelBuilder &ModelBuilder::readFromBuffer(const char* buffer) {
                 break;
             }
             default:
-                throw "Unsupport layer";
+                throw string("Unsupport layer");
         }
         stringstream ss;
         char c;
@@ -337,8 +347,6 @@ ModelBuilder &ModelBuilder::readFromBuffer(const char* buffer) {
         blobNameToIndex[topName] = index;
         while (*intPt++ != MF_PARAM_END) ;
     }
-
-    blobNameToIndex["data_bak"] = addAddScalar(0, 0.0f);
 
     return *this;
 }
@@ -358,7 +366,6 @@ uint32_t ModelBuilder::addInput(uint32_t height, uint32_t width, uint32_t depth)
     vector<uint32_t> dimen{1, width, height, depth};
     ANeuralNetworksOperandType type = getFloat32OperandTypeWithDims(dimen);
     uint32_t index = addNewOperand(&type);
-    cout << "index: " << index << endl;
 
     dimensMap[index] = dimen;
     inputIndexVector.push_back(index);
@@ -547,7 +554,7 @@ ModelBuilder::addConcat(const vector<uint32_t> &inputs, uint32_t axis) {
             for (size_t i = 0; i < dimens[0].size(); i++) {
                 if (i == axis) continue;
                 if (dimen[i] != dimens[0][i]) {
-                    throw "Wrong input for concat";
+                    throw string("Wrong input for concat");
                 }
             }
         }
@@ -610,17 +617,6 @@ ANeuralNetworksOperandType ModelBuilder::getFloat32OperandType() {
     return type;
 }
 
-ANeuralNetworksOperandType ModelBuilder::getFloat32AsTensorOperandType() {
-    ANeuralNetworksOperandType type;
-    type.type = ANEURALNETWORKS_TENSOR_FLOAT32;
-    type.scale = 0.f;
-    type.zeroPoint = 0;
-    type.dimensionCount = 0;
-    type.dimensions = nullptr;
-
-    return type;
-}
-
 /**
  * set operand value from file in assets
  * @param model
@@ -666,7 +662,12 @@ uint32_t ModelBuilder::addFloat32Operand(float value) {
 
 uint32_t ModelBuilder::addFloat32AsTensorOperand(float value) {
     if (float32AsTensorOperandMap.find(value) == float32AsTensorOperandMap.end()) {
-        ANeuralNetworksOperandType type = getFloat32AsTensorOperandType();
+        /**
+         * The `dims` variable mustn't be destoried before `addNewOperand`,
+         * because ANeuralNetworksOperandType is only a struct storing a pointer to dims[0]
+         */
+        auto dims = std::vector<uint32_t>{1};
+        auto type = getFloat32OperandTypeWithDims(dims);
         uint32_t index = addNewOperand(&type);
         ANeuralNetworksModel_setOperandValue(model, index, &value, sizeof(value));
         float32AsTensorOperandMap[value] = index;
@@ -696,6 +697,7 @@ uint32_t ModelBuilder::addFloat32NullOperand(){
 uint32_t ModelBuilder::addNewOperand(ANeuralNetworksOperandType *type) {
     int ret;
     if ((ret = ANeuralNetworksModel_addOperand(model, type)) != ANEURALNETWORKS_NO_ERROR) {
+        LOGE("Add new operand %d error", nextIndex);
         return UINT32_MAX - ret;
     }
     return nextIndex++;
@@ -720,11 +722,6 @@ void ModelBuilder::addIndexIntoOutput(uint32_t index) {
 
 int ModelBuilder::compile(uint32_t preference) {
     int ret;
-    cout << inputIndexVector.size() << endl;
-    cout << outputIndexVector.size() << endl;
-    cout << "---" << endl;
-    cout << inputIndexVector[0] << endl;
-    cout << outputIndexVector[0] << endl;
     if ((ret = ANeuralNetworksModel_identifyInputsAndOutputs(
             model,
             static_cast<uint32_t>(inputIndexVector.size()), &inputIndexVector[0],
@@ -845,7 +842,7 @@ uint32_t ModelBuilder::addAddScalar(uint32_t input, float scalar) {
     uint32_t outputOperandIndex = addNewOperand(&outputBlobType);
     dimensMap[outputOperandIndex] = dimensMap[input];
 
-    cout << "add add operation " << ANeuralNetworksModel_addOperation(model, ANEURALNETWORKS_ADD, 3, &inputOperands[0], 1, &outputOperandIndex) << endl;
+    ANeuralNetworksModel_addOperation(model, ANEURALNETWORKS_ADD, 3, &inputOperands[0], 1, &outputOperandIndex);
     return outputOperandIndex;
 }
 
@@ -925,18 +922,37 @@ string ModelBuilder::getErrorProcedure(int errorCode) {
             return "model finish";
         case NN_IDENTIFY_IO:
             return "identify input and output";
+        case 0:
+            return "No error";
         default:
             return "Unknown error code";
     }
 }
 
-ResultCode ModelBuilder::getErrorCause(int errorCode) {
+string ModelBuilder::getErrorCause(int errorCode) {
     errorCode &= NN_CAUSE_MASK;
 
-    return static_cast<ResultCode>(errorCode);
+    switch (errorCode) {
+        case ANEURALNETWORKS_OUT_OF_MEMORY:
+            return "Out of memory";
+        case ANEURALNETWORKS_BAD_DATA:
+            return "Bad data";
+        case ANEURALNETWORKS_BAD_STATE:
+            return "Bad state";
+        case ANEURALNETWORKS_INCOMPLETE:
+            return "Incomplete";
+        case ANEURALNETWORKS_UNEXPECTED_NULL:
+            return "Unexpected null";
+        case ANEURALNETWORKS_OP_FAILED:
+            return "Op failed";
+        case ANEURALNETWORKS_UNMAPPABLE:
+            return "Unmappable";
+        case ANEURALNETWORKS_NO_ERROR:
+            return "No error";
+        default:
+            return "Unknown error code";
+    }
 }
-
-
 
 
 uint32_t product(const vector<uint32_t> &v) {

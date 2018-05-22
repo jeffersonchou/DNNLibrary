@@ -17,10 +17,9 @@ int main(int argc, char** argv) {
     ModelBuilder builder;
     cout << builder.init() << endl;
     builder.simplestModel();
-    builder.addIndexIntoOutput(3);
     int ret = builder.compile(ANEURALNETWORKS_PREFER_FAST_SINGLE_ANSWER);
     cout << ModelBuilder::getErrorProcedure(ret) << endl;
     cout << ModelBuilder::getErrorCause(ret) << endl;
-
+    Model model;
     return 0;
 }
