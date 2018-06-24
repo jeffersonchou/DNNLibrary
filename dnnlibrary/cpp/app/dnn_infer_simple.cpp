@@ -62,8 +62,9 @@ int main(int argc, char **argv) {
     builder.setInputBuffer(model, builder.getInputIndexes()[0], data, sizeof(data));
     builder.setOutputBuffer(model, builder.getOutputIndexes()[0], output, sizeof(output));
     model.predict();
+    std::ofstream ofs("/data/local/tmp/result");
     for (int i = 0; i < outputLen; i++) {
-        cout << output[i] << endl;
+        ofs << output[i] << endl;
     }
 
     builder.clear();
