@@ -17,9 +17,9 @@ int main(int argc, char** argv) {
     ModelBuilder builder;
     cout << builder.init() << endl;
     auto input = builder.addInput(5, 3, 4);
-    vector<uint32_t> starts{0, 0, 0, 0};
-    vector<uint32_t> ends{0, 0, 0, 2};
-    vector<uint32_t> strides{1, 1, 1, 1};
+    vector<int32_t> starts{0, 0, 0, 0};
+    vector<int32_t> ends{0, 0, 0, 2};
+    vector<int32_t> strides{1, 1, 1, 1};
     uint32_t beginMask = 7;//14;
     uint32_t endMask = 7;//14;
     uint32_t shrinkMask = 0;

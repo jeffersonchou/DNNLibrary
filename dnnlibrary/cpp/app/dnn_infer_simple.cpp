@@ -34,7 +34,6 @@ int main(int argc, char **argv) {
     }
     builder.addIndexIntoOutput(builder.getBlobIndex(outputBlob));
     int ret = builder.compile(ANEURALNETWORKS_PREFER_FAST_SINGLE_ANSWER);
-    cout << ModelBuilder::getErrorProcedure(ret) << endl;
 
     Model model;
     auto inputDim = builder.getBlobDim(builder.getInputIndexes()[0]);
@@ -51,9 +50,9 @@ int main(int argc, char **argv) {
             data[i] = i;
         }
     }
-    uint32_t outputLen = product(builder.getBlobDim(builder.getOutputIndexes()[0]));
 
-    cout << outputLen << endl;
+    const std::vector<uint32_t> &outputDim = builder.getBlobDim(builder.getOutputIndexes()[0]);
+    uint32_t outputLen = product(outputDim);
 
     float output[outputLen];
 
