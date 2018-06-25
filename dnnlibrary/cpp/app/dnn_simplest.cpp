@@ -14,14 +14,15 @@ using std::string; using std::cout; using std::endl; using std::vector;
 typedef std::chrono::high_resolution_clock Clock;
 
 int main(int argc, char** argv) {
+#if __ANDROID_API__ >= __ANDROID_API_P__
     ModelBuilder builder;
     cout << builder.init() << endl;
     auto input = builder.addInput(5, 3, 4);
     vector<int32_t> starts{0, 0, 0, 0};
     vector<int32_t> ends{0, 0, 0, 2};
     vector<int32_t> strides{1, 1, 1, 1};
-    uint32_t beginMask = 7;//14;
-    uint32_t endMask = 7;//14;
+    uint32_t beginMask = 7;
+    uint32_t endMask = 7;
     uint32_t shrinkMask = 0;
     auto index = builder.addStridedSlice(input, starts, ends, strides, beginMask, endMask, shrinkMask);
     builder.addIndexIntoOutput(index);
@@ -54,5 +55,8 @@ int main(int argc, char** argv) {
     }
 
     builder.clear();
+#else
+    cout << "Please compile with API 28 and run on API 28 device" << endl;
+#endif
     return 0;
 }
