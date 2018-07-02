@@ -77,6 +77,8 @@ public:
     static const uint32_t MF_DEPTH_CONV = 12;
 #if __ANDROID_API__ >= __ANDROID_API_P__
     static const uint32_t MF_STRIDED_SLICE = 13;
+    static const uint32_t MF_BATCH_TO_SPACE_ND = 14;
+    static const uint32_t MF_SPACE_TO_BATCH_ND = 15;
 #endif
 
     static const uint32_t MF_ACTIVATION_NONE = 0;
@@ -107,6 +109,10 @@ public:
     static const uint32_t MF_LRN_BETA = 16;
     static const uint32_t MF_LOCAL_SIZE = 17;
     static const uint32_t MF_GROUP = 18;
+#if __ANDROID_API__ >= __ANDROID_API_P__
+    static const uint32_t MF_BLOCK_SIZE = 19;
+    static const uint32_t MF_PADDINGS_FOR_BS = 20;
+#endif
 
     static const int NN_PROCEDURE_MASK = ((1U << 16U) - 1) << 16U;
     static const int NN_CAUSE_MASK = ((1U << 16U) - 1);
@@ -156,6 +162,8 @@ public:
                              const std::vector<int32_t> &strides, int32_t beginMask, int32_t endMask,
                              int32_t shrinkAxismask);
 #endif
+    uint32_t addSpaceToBatchNd(uint32_t input, std::vector<uint32_t> blockSize, std::vector<uint32_t> paddings);
+    uint32_t addBatchToSpaceNd(uint32_t input, std::vector<uint32_t> blockSize);
     void addIndexIntoOutput(uint32_t index);
     int compile(uint32_t preference);
     void prepareForExecution(Model &model);

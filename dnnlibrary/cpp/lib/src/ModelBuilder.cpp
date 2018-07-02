@@ -439,6 +439,11 @@ ModelBuilder &ModelBuilder::readFromBuffer(const char* buffer) {
                 layerToBlob.push_back(index);
                 break;
             }
+            case MF_SPACE_TO_BATCH_ND: {
+                uint32_t input = layerToBlob[*intPt++];
+                break;
+            }
+
 #endif
             case MF_LRN: {
                 uint32_t input = layerToBlob[*intPt++];
@@ -614,6 +619,60 @@ ModelBuilder::addStridedSlice(uint32_t input, const vector<int32_t> &starts, con
                                       &outputOperandIndex);
     return outputOperandIndex;
 }
+
+uint32_t ModelBuilder::addBatchToSpaceNd(uint32_t input, const std::vector<uint32_t> blockSize) {
+    if (input >= nextIndex) return WRONG_INPUT;
+
+    uint32_t blockSizeIdx = addIntTensorFromBuffer(&blockSize[0], vector<uint32_t>{static_cast<uint32_t>(blockSize.size())});
+
+    // NHWC
+    vector<uint32_t> inputDimen = dimensMap[input];
+    uint32_t batchMultiplier = product(blockSize);
+    vector<uint32_t> outputDimen{inputDimen[0] / batchMultiplier,
+                                 inputDimen[1] * blockSize[0],
+                                 inputDimen[2] * blockSize[1],
+                                 inputDimen[3]};
+
+    ANeuralNetworksOperandType outputBlobType = getFloat32OperandTypeWithDims(outputDimen);
+    uint32_t outputOperandIndex = addNewOperand(&outputBlobType);
+
+    dimensMap[outputOperandIndex] = outputDimen;
+
+    array<uint32_t, 2> inputOperandsArr{{input, blockSizeIdx}};
+
+    ANeuralNetworksModel_addOperation(model, ANEURALNETWORKS_BATCH_TO_SPACE_ND, 2, &inputOperandsArr[0], 1,
+                                      &outputOperandIndex);
+    return outputOperandIndex;
+}
+
+
+uint32_t ModelBuilder::addSpaceToBatchNd(uint32_t input, const std::vector<uint32_t> blockSize,
+                                         const std::vector<uint32_t> paddings) {
+    if (input >= nextIndex) return WRONG_INPUT;
+
+    uint32_t blockSizeIdx = addIntTensorFromBuffer(&blockSize[0], vector<uint32_t>{static_cast<uint32_t>(blockSize.size())});
+    uint32_t paddingIdx = addIntTensorFromBuffer(&paddings[0], vector<uint32_t>{static_cast<uint32_t>(paddings.size())});
+
+    // NHWC
+    vector<uint32_t> inputDimen = dimensMap[input];
+    uint32_t batchMultiplier = product(blockSize);
+    vector<uint32_t> outputDimen{inputDimen[0] * batchMultiplier,
+                                 (inputDimen[1] + paddings[2] + paddings[3]) / blockSize[0],
+                                 (inputDimen[2] + paddings[4] + paddings[5]) / blockSize[1],
+                                 inputDimen[3]};
+
+    ANeuralNetworksOperandType outputBlobType = getFloat32OperandTypeWithDims(outputDimen);
+    uint32_t outputOperandIndex = addNewOperand(&outputBlobType);
+
+    dimensMap[outputOperandIndex] = outputDimen;
+
+    array<uint32_t, 3> inputOperandsArr{{input, blockSizeIdx, paddingIdx}};
+
+    ANeuralNetworksModel_addOperation(model, ANEURALNETWORKS_SPACE_TO_BATCH_ND, 3, &inputOperandsArr[0], 1,
+                                      &outputOperandIndex);
+    return outputOperandIndex;
+}
+
 #endif
 
 uint32_t ModelBuilder::addCaffePool(uint32_t input, int32_t strideX, int32_t strideY,
