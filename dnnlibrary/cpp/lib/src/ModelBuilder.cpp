@@ -441,6 +441,37 @@ ModelBuilder &ModelBuilder::readFromBuffer(const char* buffer) {
             }
             case MF_SPACE_TO_BATCH_ND: {
                 uint32_t input = layerToBlob[*intPt++];
+                uint32_t paramType;
+                while ((paramType = *intPt++) != MF_TOP_NAME) {
+                    switch (paramType) {
+                        case MF_BLOCK_SIZE: {
+                            numOutput = *intPt++;
+                            break;
+                        }
+                        case MF_WEIGHT: {
+                            vector<uint32_t> weightDim{numOutput, product(inputDim)};
+                            weightIndex = addWeightOrBiasFromBuffer(intPt, weightDim);
+                            intPt += product(weightDim);
+
+                            break;
+                        }
+                        case MF_BIAS: {
+                            biasIndex = addWeightOrBiasFromBuffer(intPt,
+                                                                  vector<uint32_t>{numOutput});
+                            intPt += numOutput;
+                            break;
+                        }
+                        case MF_ACTIVATION: {
+                            uint32_t mfActType = *intPt++;
+                            if (mfActType == MF_ACTIVATION_NONE) {
+                                activation = ACTIVATION_NONE;
+                            } else if (mfActType == MF_ACTIVATION_RELU) {
+                                activation = ACTIVATION_RELU;
+                            }
+                            break;
+                        }
+                    }
+                }
                 break;
             }
 
@@ -1085,7 +1116,12 @@ uint32_t ModelBuilder::addFC(uint32_t input, uint32_t outputNum, int32_t activat
 }
 
 uint32_t ModelBuilder::getBlobIndex(std::string blobName) {
-    return blobNameToIndex.at(blobName);
+    try {
+        return blobNameToIndex.at(blobName);
+    } catch (std::out_of_range& e) {
+        cerr << "Name " << blobName << " is not found" << endl;
+        throw e;
+    }
 }
 
 uint32_t ModelBuilder::addAddScalar(uint32_t input, float scalar) {
